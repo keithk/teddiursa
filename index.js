@@ -21,6 +21,10 @@ if (arguments[0] == 'poke') {
   type = 'hp';
   typeName = 'Harry Potter';
   arguments.shift();   // get rid of the first one
+} else if (arguments[0] == 'pup') {
+  type = 'pp';
+  typeName = 'Puppies';
+  arguments.shift();
 }
 
 _.forEach(arguments, function(term) {
@@ -32,16 +36,46 @@ if (search) {
   fetch(`https://h.getdango.com/special/${type}/search?q=${search}`)
     .then(res => res.json())
     .then(body => {
-      // lets choose a random selection out of the top 5
-      var choices = body.results.slice(1, 5);
-      var choice = _.sample(choices);
-      // console.log(choices, choice);
-      var url = `https://i.dgif.co/gifs/${type}${choice}/O/${type}${choice}.gif`;
-      clipboard.copy(url);
-      let template = `<link rel="stylesheet" href="gifs.css"><div><img src='${url}' class='centered'></div>`;
-      fsp.writeFile('index.html', template)
+      // lets get the top 5
+      let choices = body.results.slice(0, 5);
+      let images = '';
+      _.each(choices, function(choice) {
+        var url = `https://i.dgif.co/gifs/${type}${choice}/O/${type}${choice}.gif`;
+        images = `${images} <div class='image'><img src='${url}'></div>`;
+      });
+      let template = `<title>GIF Search</title> <style>body, html {
+        background-color: #e26b73;
+      }
+
+      h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 40px;
+        letter-spacing: 2px;
+      }
+
+      .centered {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        /* bring your own prefixes */
+        height: 400px;
+      }
+
+      .image {
+        padding: 20px 20px;
+        margin: auto;  /* Magic! */
+      }
+
+      img {
+        max-width: 300px;
+        border-radius: 10px;
+      }
+</style><h1>GIF Choices for ${search}</h1><div class='centered'> ${images}</div>`;
+      fsp.writeFile('/tmp/gifs.html', template)
         .then(function(){
-          opn('index.html', { wait: false });
+          opn('/tmp/gifs.html', { wait: false });
         });
       console.log("URL copied to clipboard 👍");
     });
