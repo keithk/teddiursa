@@ -40,8 +40,8 @@ if (search) {
   fetch(`https://h.getdango.com/special/${type}/search?q=${search}`)
     .then(res => res.json())
     .then(body => {
-      // lets get the top 5
-      let choices = body.results.slice(0, 5);
+      // lets get the top 10
+      let choices = body.results.slice(0, 10);
       let images = '';
       _.each(choices, function(choice) {
         var url = `https://i.dgif.co/gifs/${type}${choice}/O/${type}${choice}.gif`;
@@ -74,6 +74,7 @@ if (search) {
 
       img {
         max-width: 300px;
+        max-height: 300px;
         border-radius: 10px;
       }
 </style><h1>GIF Choices for ${search}</h1><div class='centered'> ${images}</div>`;
