@@ -25,6 +25,10 @@ if (arguments[0] == 'poke') {
   type = 'pp';
   typeName = 'Puppies';
   arguments.shift();
+} else if (arguments[0] == 'at') {
+  type = 'at';
+  typeName = 'Adventure Time';
+  arguments.shift();
 }
 
 _.forEach(arguments, function(term) {
